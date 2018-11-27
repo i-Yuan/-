@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>用户设置</title>
+    <link rel="stylesheet" th:href="@{/lib/Layui/css/layui.css}"  media="all">
+    <link rel="stylesheet" type="text/css" href="/lib/solar/stylesheets/simple-calendar.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <script type="text/javascript" src="/lib/Layui/layui.js"></script>
+    <script type="text/javascript" src="/lib/solar/javascripts/simple-calendar.js"></script>
+</head>
+
+<meta charset="utf-8">
+<title>layui</title>
+<body>
+    <div class="layui-nav">
+        <div class="box-center nav clear">
+            <a class="logo" href="#"><img src="/img/logo.png"></a>
+
+            <ul class="navmenu" lay-filter="">
+                <li class="layui-nav-item">
+                    <a href="">首页</a>
+                </li>
+                <li class="layui-nav-item layui-this">
+                    <a href="">课程广场</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="">我的学习</a>
+                </li>
+                <li class="layui-nav-item my">
+                    <a href=""><img src="/img/face.png" class="layui-nav-img">我</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="/teacherhome/editor">修改信息</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;">安全管理</a>
+                        </dd>
+                        <dd>
+                            <a href="/teacherhome/logout">退了</a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="box-center conbg">
+        <div class="leftbox">
+            <div class="face">
+                <img src="/img/face.png">
+                <div class="lefname" th:text="${teacher.getRealname()}">某某某</div>
+                <span class="ide">已认证</span>
+            </div>
+
+            <ul class="lefnav">
+                <li class="">
+                    <a th:href="@{/teacherhome}">我的班级</a>
+                </li>
+                <li class="">
+                    <a href="">课程进度</a>
+                </li>
+                <li class="">
+                    <a th:href="@{/teacherhome/news}">消息中心</a>
+                </li>
+                <li class="">
+                    <a th:href="@{/teacherhome/editor}">个人设置</a>
+                </li>
+                <li class="this">
+                    <a th:href="@{/teacherhome/user_editor}">用户设置</a>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="rightbox">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">用户信息</li>
+                </ul>
+
+                <table class="layui-hide" id="test" lay-filter="test"></table>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="bin/Layui/layui.js" charset="utf-8"></script>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+      <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+      <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+      <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+    </div>
+  </script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+  </script>
+
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+        var $ = layui.jquery;
+        table.render({
+            elem: '#test',
+            url: '/teacherhome/user_editor_data',
+            toolbar: '#toolbarDemo',
+            title: '用户数据表',
+            cols: [
+                [{
+                    type: 'checkbox',
+                    fixed: 'left'
+                }, {
+                    field: 'username',
+                    title: '用户名',
+                    width: 120,
+                    edit: 'text'
+                }, {
+                    field: 'studentnum',
+                    title: '学号/教工号',
+                    width: 150,
+                    edit: 'text',
+                }, {
+                    field: 'password',
+                    title: '密码',
+                    width: 100
+                }, {
+                    field: 'realname',
+                    title: '姓名',
+                    width: 100
+                }, {
+                    field: 'phone',
+                    title: '电话',
+                    width: 100,
+                }, {
+                    field: 'email',
+                    title: '邮箱',
+                    width: 150,
+                    templet: function(res){
+                        return '<em>'+ res.email +'</em>'
+                    }
+                }, {
+                    field:'status',
+                    title:'身份',
+                    width: 100
+                }, {
+                    fixed: 'right',
+                    title: '操作',
+                    toolbar: '#barDemo',
+                    width: 150
+                }]
+            ],
+            page: true,
+            done: function(res, curr, count){
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                console.log(res);
+
+                //得到当前页码
+                console.log(curr);
+
+                //得到数据总量
+                console.log(count);
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            console.log(obj)
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    $.post('/teacherhome/delete_user',{'username':data.username},function () {
+                        layer.msg("请求发起成功");
+                    })
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.prompt({
+                    formType: 2,
+                    value: data.status
+                }, function (value, index) {
+                    obj.update({
+                        status: value
+                    });
+                    var username = data.username;
+                    $.post('/teacherhome/editor_setTeacher',{'status':data.status,'username':username},
+                    function () {
+                        layer.msg("发送请求成功");
+                    })
+                    layer.close(index);
+                });
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+</script>
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+
+
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+</script>
+
+</html>

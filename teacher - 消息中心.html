@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>知识地图-学生</title>
+    <link rel="stylesheet" href="/lib/Layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/solar/stylesheets/simple-calendar.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <script type="text/javascript" src="/lib/Layui/layui.js"></script>
+    <script type="text/javascript" src="/lib/solar/javascripts/simple-calendar.js"></script>
+</head>
+
+<body>
+    <div class="layui-nav">
+        <div class="box-center nav clear">
+            <a class="logo" href="#"><img src="img/logo.png"></a>
+
+            <ul class="navmenu" lay-filter="">
+                <li class="layui-nav-item">
+                    <a href="">首页</a>
+                </li>
+                <li class="layui-nav-item layui-this">
+                    <a href="">课程广场</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="">我的学习</a>
+                </li>
+                <li class="layui-nav-item my">
+                    <a href=""><img src="/img/face.png" class="layui-nav-img">我</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="/teacherhome/editor">修改信息</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;">安全管理</a>
+                        </dd>
+                        <dd>
+                            <a href="/teacherhome/logout">退出</a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="box-center conbg">
+        <div class="leftbox">
+            <div class="face">
+                <img src="/img/face.png">
+                <div th:text="${teacher.getRealname()}" class="lefname">某某某</div>
+                <span class="ide">已认证</span>
+            </div>
+
+            <ul class="lefnav">
+                <li class="">
+                    <a th:href="@{/teacherhome}">我的班级</a>
+                </li>
+                <li class="">
+                    <a href="">课程进度</a>
+                </li>
+                <li class="this">
+                    <a th:href="@{/teacherhome/news}">消息中心</a>
+                </li>
+                <li class="">
+                    <a th:href="@{/teacherhome/editor}">个人设置</a>
+                </li>
+                <li class="">
+                    <a th:href="@{/teacherhome/user_editor}">用户设置</a>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="rightbox">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">消息中心</li>
+                </ul>
+                <div class="layui-collapse" lay-filter="test">
+                    <div class="layui-colla-item" th:each="all_new:${News}">
+                        <h2 class="layui-colla-title" th:text="${all_new.getSendName()} + '      发送日期为:' + ${all_new.getDate()}"></h2>
+                        <div class="layui-colla-content">
+                            <p>消息所属课程id:</p>
+                            <p class="courseid" th:text="${all_new.getCourseid()}"></p>
+                            <p>消息所属课程名字:</p>
+                            <p class="coursename" th:text="${all_new.getCoursename()}" ></p>
+                            <p>消息所属教师名字:</p>
+                            <p class="teachname" th:text="${all_new.getTeachname()}"></p>
+                            <p>消息接收者学号;</p>
+                            <p class="receievenum" th:text="${all_new.getReceieveNum()}"></p>
+                            <p th:text="${all_new.getNews()}">an1</p>
+                            <p th:text="${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm:ss')}"></p>
+                            <button class="layui-btn" data-method="setTop">回复</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+</script>
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+
+
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+</script>
+<script>
+    var myCalendar = new SimpleCalendar('#calendar');
+</script>
+<script>
+    layui.use('layer',function(){
+        var $ = layui.jquery, layer = layui.layer;
+        var active = {
+            setTop:function(parent){
+                console.log('执行相关功能。。。。。。。');
+                var courseid = $(parent).children('.courseid').text();
+                var coursename = $(parent).children('.coursename').text();
+                var teachname = $(parent).children('.teachname').text();
+                var receievenum = $(parent).children('.receievenum').text();
+                console.log('回复者信息:' + courseid + '\t' + coursename + '\t' + teachname + '\t' + receievenum);
+                layer.open({
+                    type:2,
+                    title:"请输入回复的内容",
+                    area:['590px','360px'],
+                    shade:0,
+                    maxmin:true,
+                    offset: [ //为了演示，随机坐标
+                        Math.random()*($(window).height()-300)
+                        ,Math.random()*($(window).width()-390)
+                    ],
+                    content:'/news/up_news/' + courseid + '/' + coursename + '/' + teachname + '/' + receievenum,//填入的表单html代码。
+                    btn:['取消'],
+                    yes:function () {
+                        layer.closeAll();
+                    },
+                    zIndex: layer.zIndex ,//重点1
+                    success: function(layero){
+                        layer.setTop(layero); //重点2
+                    }
+                });
+            }
+        }
+        $('.layui-btn').on('click', function(){
+            console.log('点击事件捕捉成功');
+            var othis = $(this), method = othis.data('method');
+            var parent = $(othis).closest('div');
+            active[method] ? active[method].call(this, parent) : '';
+            console.log('函数执行函数调用');
+        });
+    });
+</script>
+</html>

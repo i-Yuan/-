@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html
+		xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8">
+		<title>学生-学习主页</title>
+		<link rel="stylesheet" href="lib/Layui/css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="lib/solar/stylesheets/simple-calendar.css">
+		<link rel="stylesheet" href="css/style.css" />
+		<script type="text/javascript" src="lib/Layui/layui.js"></script>
+		<script type="text/javascript" src="lib/solar/javascripts/simple-calendar.js"></script>
+	</head>
+
+	<body>
+		<div class="layui-nav">
+			<div class="box-center nav clear">
+				<a class="logo" href="#"><img src="img/logo.png"></a>
+
+				<ul class="navmenu" lay-filter="">
+					<li class="layui-nav-item">
+						<a href="">首页</a>
+					</li>
+					<li class="layui-nav-item ">
+						<a href="">课程广场</a>
+					</li>
+					<li class="layui-nav-item layui-this">
+						<a href="">我的学习</a>
+					</li>
+					<li class="layui-nav-item my">
+						<a href=""><img src="img/face.png" class="layui-nav-img">我</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="/studenthome/editor">修改信息</a>
+							</dd>
+							<dd>
+								<a href="javascript:;">安全管理</a>
+							</dd>
+							<dd>
+								<a href="/studenthome/logout">退了</a>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="box-center conbg">
+			<div class="leftbox">
+				<div class="face">
+					<img src="img/face.png">
+					<div th:text="${student.getRealname()}" class="lefname">某某某</div>
+					<span class="ide">已认证</span>
+				</div>
+
+				<ul class="lefnav">
+					<li class="this">
+						<a th:href="@{/studenthome}">我的学习</a>
+					</li>
+					<li class="">
+						<a href="javascript:;">我的收藏</a>
+					</li>
+					<li class="">
+						<a th:href="@{studenthome/news}">消息中心</a>
+					</li>
+					<li class="">
+						<a th:href="@{/studenthome/editor}">个人设置</a>
+					</li>
+				</ul>
+
+			</div>
+
+			<div class="rightbox">
+				<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+					<ul class="layui-tab-title">
+						<li class="layui-this">我的课程</li>
+						<li>日历</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<table class="layui-table">
+								<colgroup>
+									<col width="150">
+									<col width="200">
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th>课程</th>
+										<th>课程号</th>
+										<th>课程老师</th>
+										<th>课程详细介绍</th>
+										<th>编辑</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="course:${courses}">
+										<td th:text="${course.getCoursename()}">测试数据</td>
+										<td th:text="${course.getCourseid()}">2016-11-29</td>
+										<td th:text="${course.getTeachname()}">测试数据</td>
+										<td th:text="${course.getClassnum()}">测试数据</td>
+										<td><button class="layui-btn layui-btn-normal"><a th:href="@{'/studenthome/#/' + ${course.getCourseid()}}">删除课程</a></button></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="layui-tab-item">
+							<div id="calendar"></div>
+						</div>
+					</div>
+				</div>
+
+				
+			</div>
+		</div>
+
+	</body>
+	<script>
+		layui.use('element', function() {
+			var element = layui.element;
+		});
+	</script>
+	<script>
+		layui.use('form', function() {
+			var form = layui.form;
+
+		
+			form.on('submit(formDemo)', function(data) {
+				layer.msg(JSON.stringify(data.field));
+				return false;
+			});
+		});
+	</script>
+	<script>
+		var myCalendar = new SimpleCalendar('#calendar');
+	</script>
+
+</html>

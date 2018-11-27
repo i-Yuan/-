@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>知识地图-学生</title>
+    <link rel="stylesheet" href="/lib/Layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/solar/stylesheets/simple-calendar.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <script type="text/javascript" src="/lib/Layui/layui.js"></script>
+    <script type="text/javascript" src="/lib/solar/javascripts/simple-calendar.js"></script>
+</head>
+
+<body>
+    <div class="layui-nav">
+        <div class="box-center nav clear">
+            <a class="logo" href="#"><img src="/img/logo.png"></a>
+
+            <ul class="navmenu" lay-filter="">
+                <li class="layui-nav-item">
+                    <a href="">首页</a>
+                </li>
+                <li class="layui-nav-item layui-this">
+                    <a href="">课程广场</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="">我的学习</a>
+                </li>
+                <li class="layui-nav-item my">
+                    <a href=""><img src="/img/face.png" class="layui-nav-img">我</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="/studenthome/editor">修改信息</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;">安全管理</a>
+                        </dd>
+                        <dd>
+                            <a href="/studenthome/logout">退了</a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="box-center conbg">
+        <div class="leftbox">
+            <div class="face">
+                <img src="/img/face.png">
+                <div th:text="${student.getRealname()}" class="lefname">某某某</div>
+                <span class="ide">已认证</span>
+            </div>
+
+            <ul class="lefnav">
+                <li class="">
+                    <a th:href="@{/studenthome}">我的学习</a>
+                </li>
+                <li class="">
+                    <a href="">我的收藏</a>
+                </li>
+                <li class="this">
+                    <a th:href="@{/studenthome/news}">消息中心</a>
+                </li>
+                <li class="">
+                    <a th:href="@{/studenthome/editor}">个人设置</a>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="rightbox">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">接收消息中心</li>
+                </ul>
+                <div class="layui-collapse" lay-filter="test" th:if="${news.size()} != 0">
+                    <div class="layui-colla-item" th:each="new:${news}">
+                        <h2 class="layui-colla-title" th:text="'发送者为:' + ${new.getSendName()}">q1</h2>
+                        <div class="layui-colla-content">
+                            <p>消息所属课程id:</p>
+                            <p class="courseid" th:text="${new.getCourseid()}"></p></br>
+                            <p>消息所属课程名字:</p>
+                            <p class="coursename" th:text="${new.getCoursename()}"></p></br>
+                            <p>消息所属教师名字:</p>
+                            <p class="teachname" th:text="${new.getTeachname()}"></p></br>
+                            <p>消息接收者学号;</p>
+                            <p class="receievenum" th:text="${new.getReceieveNum()}"></p></br>
+                            <p th:text="${new.getNews()}">an1</p>
+                            <p th:text="${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm:ss')}"></p>
+                            <button class="layui-btn" id = "layerDemo1" data-method="setTop">回复</button>
+                        </div>
+                    </div>
+                </div>
+                <ul class="layui-tab-title">
+                    <li class="layui-this">发送消息中心</li>
+                </ul>
+                <div class="layui-collapse" lay-filter="test" th:if="${sendNews.size()} != 0">
+                    <div class="layui-colla-item" th:each="sendnew:${sendNews}">
+                        <h2 class="layui-colla-title" th:text="'接收者为:' + ${sendnew.getReceieveName()} ">q1</h2>
+                        <div class="layui-colla-content">
+                            <p>消息所属课程id:</p>
+                            <p class="coursename" th:text="${sendnew.getCoursename()}"></p></br>
+                            <p>消息所属课程名字:</p>
+                            <p class="courseid" th:text="${sendnew.getCourseid()}"></p></br>
+                            <p>消息所属教师名字:</p>
+                            <p class="teachname" th:text="${sendnew.getTeachname()}"></p></br>
+                            <p>消息接收者学号;</p>
+                            <p class="receievenum" th:text="${sendnew.getReceieveNum()}"></p></br>
+                            <p th:text="${sendnew.getNews()}">an2</p>
+                            <p th:text="${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm:ss')}"></p>
+                            <button class="layui-btn info" id = "layerDemo" data-method="setTop">再次发送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+        var layer = layui.layer;
+    });
+</script>
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+
+
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+</script>
+<script>
+    var myCalendar = new SimpleCalendar('#calendar');
+</script>
+<script>
+    layui.use('layer',function(){
+        var $ = layui.jquery, layer = layui.layer;
+        var active = {
+            setTop:function(parent){
+                console.log('该功能执行。。。。。。。');
+                var courseid = $(parent).children('.courseid').text();
+                var coursename = $(parent).children('.coursename').text();
+                var teachname = $(parent).children('.teachname').text();
+                var receievenum = $(parent).children('.receievenum').text();
+                console.log(courseid + coursename + teachname + receievenum);
+                layer.open({
+                    type:2,
+                    title:"请输入回复的内容",
+                    area:['590px','360px'],
+                    shade:0,
+                    maxmin:true,
+                    offset: [ //为了演示，随机坐标
+                        Math.random()*($(window).height()-300)
+                        ,Math.random()*($(window).width()-390)
+                    ],
+                    content:'/news/up_news/' + courseid + '/' + coursename + '/' + teachname + '/' + receievenum,//填入的表单html代码。
+                    btn:['取消'],
+                    yes:function () {
+                        layer.closeAll();
+                    },
+                    zIndex: layer.zIndex ,//重点1
+                    success: function(layero){
+                        layer.setTop(layero); //重点2
+                    }
+                });
+            }
+        }
+        $('.layui-btn info').on('click', function(){
+            console.log('该功能执行。。。。。。。');
+            var othis = $(this), method = othis.data('method');
+            var parent = $(othis).closest('div');
+            active[method] ? active[method].call(this, parent) : '';
+        });
+        $('.layui-btn').on('click', function(){
+            console.log('该功能执行。。。。。。。');
+            var othis = $(this), method = othis.data('method');
+            var parent = $(othis).closest('div');
+            active[method] ? active[method].call(this, parent) : '';
+        });
+    });
+</script>
+</html>

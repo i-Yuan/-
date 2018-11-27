@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html
+		xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8">
+		<title>教师-班级成绩</title>
+		<link rel="stylesheet" th:href="@{/lib/Layui/css/layui.css}" />
+		<link rel="stylesheet" type="text/css" th:href="@{/lib/solar/stylesheets/simple-calendar.css}">
+		<link rel="stylesheet" th:href="@{/css/style.css}" />
+		<script type="text/javascript" th:src="@{/lib/Layui/layui.js}"></script>
+		<script type="text/javascript" th:src="@{lib/solar/javascripts/simple-calendar.js}"></script>
+	</head>
+
+	<body>
+		<div class="layui-nav">
+			<div class="box-center nav clear">
+				<a class="logo" href="#"><img th:src="@{img/logo.png}"></a>
+
+				<ul class="navmenu" lay-filter="">
+					<li class="layui-nav-item">
+						<a href="">首页</a>
+					</li>
+					<li class="layui-nav-item ">
+						<a href="">课程广场</a>
+					</li>
+					<li class="layui-nav-item layui-this">
+						<a href="">我的学习</a>
+					</li>
+					<li class="layui-nav-item my">
+						<a href=""><img th:src="@{img/face.png}" class="layui-nav-img">我</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="/teacherhome/editor">修改信息</a>
+							</dd>
+							<dd>
+								<a href="javascript:;">安全管理</a>
+							</dd>
+							<dd>
+								<a href="/teacherhome/logout">退了</a>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="box-center conbg">
+			<div class="leftbox">
+				<div class="face">
+					<img th:src="@{/img/face.png}">
+					<div class="lefname" th:text="${teacher.getRealname()}">某某某</div>
+					<span class="ide">已认证</span>
+				</div>
+
+				<ul class="lefnav">
+					<li class="this">
+						<a th:href="@{/teacherhome}">我的班级</a>
+					</li>
+					<li class="">
+						<a href="">课程进度</a>
+					</li>
+					<li class="">
+						<a th:href="@{/teacherhome/news}">消息中心</a>
+					</li>
+					<li class="">
+						<a th:href="@{/teacherhome/editor}">个人设置</a>
+					</li>
+					<li class="">
+						<a th:href="@{/teacherhome/user_editor}">用户设置</a>
+					</li>
+				</ul>
+
+			</div>
+
+			<div class="rightbox">
+				<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+					<ul class="layui-tab-title">
+						<li class="layui-this" th:text="${classnum} + '的班级成员详情'"></li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<table class="layui-hide" id="test" lay-filter="test"></table>
+						</div>
+					</div>
+				</div>
+
+				
+			</div>
+		</div>
+
+	</body>
+
+	<script src="bin/Layui/layui.js" charset="utf-8"></script>
+	<script type="text/html" id="toolbarDemo">
+		<div class="layui-btn-container">
+			<button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+			<button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+		</div>
+	</script>
+
+	<script type="text/html" id="barDemo">
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+
+	<script>
+        layui.use('table', function () {
+            var table = layui.table;
+            var $ = layui.jquery;
+            table.render({
+                elem: '#test',
+                url: '/teacherhome/student_data',
+                toolbar: '#toolbarDemo',
+                title: '班级学生表格',
+                cols: [
+                    [{
+                        type: 'checkbox',
+                        fixed: 'left'
+                    }, {
+                        field: 'classnum',
+                        title: '班级号',
+                        width: 120,
+                        edit: 'text'
+                    }, {
+                        field: 'courseid',
+                        title: '课程号',
+                        width: 150,
+                        edit: 'text',
+                    }, {
+                        field:'coursename',
+                        title:'课程名字',
+                        width: 100
+                    }, {
+                        field: 'studentname',
+                        title: '姓名',
+                        width: 100
+                    }, {
+                        field: 'studentnum',
+                        title: '学号',
+                        width: 100
+                    },{
+                        field: 'studentscore',
+                        title: '学生成绩',
+                        width: 100,
+                    }, {
+                        field: 'teach_num',
+                        title: '教师职工号',
+                        width: 150,
+
+                    }, {
+                        field:'teachname',
+                        title:'教师名字',
+                        width: 100
+                    }, {
+                        fixed: 'right',
+                        title: '操作',
+                        toolbar: '#barDemo',
+                        width: 150
+                    }]
+                ],
+                page: true,
+                done: function(res, curr, count){
+                    //如果是异步请求数据方式，res即为你接口返回的信息。
+                    //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                    console.log(res);
+
+                    //得到当前页码
+                    console.log(curr);
+
+                    //得到数据总量
+                    console.log(count);
+                }
+            });
+
+            //头工具栏事件
+            table.on('toolbar(test)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'getCheckData':
+                        var data = checkStatus.data;
+                        layer.alert(JSON.stringify(data));
+                        break;
+                    case 'getCheckLength':
+                        var data = checkStatus.data;
+                        layer.msg('选中了：' + data.length + ' 个');
+                        break;
+                };
+            });
+
+            //监听行工具事件
+            table.on('tool(test)', function (obj) {
+                var data = obj.data;
+                console.log(obj)
+                if (obj.event === 'del') {
+                    console.log('是否删除?');
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del();
+                        $.post('/teacherhome/delete_student',{'classnum':data.classnum,'courseid':data.courseid,'studentnum':data.studentnum},function () {
+							layer.message('请求发送成功!');
+                        })
+                        layer.close(index);
+                    });
+                }
+            });
+        });
+	</script>
+
+	<script>
+		layui.use('element', function() {
+			var element = layui.element;
+		});
+	</script>
+
+</html>

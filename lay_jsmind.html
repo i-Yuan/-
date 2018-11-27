@@ -1,0 +1,152 @@
+<html >
+
+<head>
+    <link rel="stylesheet" href="lib/jsmind/style/jsmind.css">
+    <link rel="stylesheet" href="lib/Layui/css/layui.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="lib/Layui/layui.js"></script>
+</head>
+<body>
+    <div class="layui-nav">
+        <div class="box-center nav clear">
+            <a class="logo" href="#"><img src="img/logo.png"></a>
+    
+            <ul class="navmenu" lay-filter="">
+                    <li class="layui-nav-item">
+                        <a href="">首页</a>
+                    </li>
+                    <li class="layui-nav-item layui-this">
+                        <a href="">课程广场</a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="">我的学习</a>
+                    </li>
+                    <li class="layui-nav-item my">
+                        <a href=""><img src="img/face.png" class="layui-nav-img">我</a>
+                        <dl class="layui-nav-child">
+                            <dd>
+                                <a href="javascript:;">修改信息</a>
+                            </dd>
+                            <dd>
+                                <a href="javascript:;">安全管理</a>
+                            </dd>
+                            <dd>
+                                <a href="javascript:;">退了</a>
+                            </dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+<div class="site-demo-button" id="layerDemo" style="margin-bottom: 0;">
+
+    <button data-method="prompt" data-type="auto" class="layui-btn layui-btn-normal">修改名字</button>
+
+</div>
+
+
+
+<div class="box-center conbg">
+    <div class="leftbox">
+        <ul class="layui-nav layui-nav-tree layui-bg-cyan layui-inline" lay-filter="demo">
+            <li class="layui-nav-item"><a href="">保存</a></li>
+            <li class="layui-nav-item layui-nav-itemed">
+                <a href="javascript:;">编辑</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">添加节点</a></dd>
+                    <dd><a href="">删除节点</a></dd>
+                    <dd><a href="">增加子树</a></dd>
+                    <dd><a href="">清除这个图所有数据</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">返回</a></li>
+        </ul>
+    </div>
+    <div class="rightbox">
+        <div id="jsmind_container"></div>
+    </div>
+</div>
+
+
+</body>
+<script type="text/javascript" src="lib/jsmind/js/jsmind.js"></script>
+<script type="text/javascript" src="lib/jsmind/js/jsmind.draggable.js"></script>
+<script type="text/javascript" src="lib/jsmind/js/jsmind.screenshot.js"></script>
+
+<script>
+    layui.use('layer', function () { 
+        var $ = layui.jquery, layer = layui.layer; 
+        var active = {
+
+            prompt:function (value, index, elem) {
+            alert(value); //得到value
+            layer.close(index);
+            layer.open({
+                    type: 1
+                    , offset: type 
+                    , id: 'layerDemo' + type 
+                    , content: '<div style="padding: 20px 100px;">' + text + '</div>'
+                    , btn: '关闭全部'
+                    , btnAlign: 'c' 
+                    , shade: 0 
+                    , yes: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+           
+           
+        };
+
+        $('#layerDemo .layui-btn').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+
+    });
+</script>
+
+
+<script>
+         var mind = {
+       /* 元数据，定义思维导图的名称、作者、版本等信息 */
+       "meta":{
+           "name":"jsMind-demo-tree",
+           "author":"hizzgdev@163.com",
+           "version":"0.2"
+       },
+       /* 数据格式声明 */
+       "format":"node_tree",
+       /* 数据内容 */
+       "data":{"id":"root","topic":"jsMind","children":[
+               {"id":"easy","topic":"Easy","direction":"left","expanded":false,"children":[
+                   {"id":"easy1","topic":"Easy to show"},
+                   {"id":"easy2","topic":"Easy to edit"},
+                   {"id":"easy3","topic":"Easy to store"},
+                   {"id":"easy4","topic":"Easy to embed"}
+               ]},
+               {"id":"open","topic":"Open Source","direction":"right","expanded":true,"children":[
+                   {"id":"open1","topic":"on GitHub"},
+                   {"id":"open2","topic":"BSD License"}
+               ]},
+               {"id":"powerful","topic":"Powerful","direction":"right","children":[
+                   {"id":"powerful1","topic":"Base on Javascript"},
+                   {"id":"powerful2","topic":"Base on HTML5"},
+                   {"id":"powerful3","topic":"Depends on you"}
+               ]},
+               {"id":"other","topic":"test node","direction":"left","children":[
+                   {"id":"other1","topic":"I'm from local variable"},
+                   {"id":"other2","topic":"I can do everything"}
+               ]}
+           ]}
+           };
+        var options = {
+            container:'jsmind_container',
+            editable:true,
+            theme:'orange'
+        };
+       var jm = new jsMind(options);
+       jm.show(mind);
+</script>
+</html>
